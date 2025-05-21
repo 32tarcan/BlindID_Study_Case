@@ -18,7 +18,7 @@ struct MoviesView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 24) {
                     ForEach(movies) { movie in
                         MovieCardView(movie: movie)
