@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @StateObject private var viewModel = AuthViewModel()
     @State private var email = ""
     @State private var password = ""
     @State private var showPassword = false
@@ -58,6 +59,12 @@ struct LoginView: View {
                             .cornerRadius(12)
                             .foregroundColor(.white)
                             
+                            if let error = viewModel.error {
+                                Text(error)
+                                    .foregroundColor(.red)
+                                    .font(.caption)
+                            }
+                            
                             Button(action: {
                                 // Forgot password action
                             }) {
@@ -71,17 +78,23 @@ struct LoginView: View {
                     .padding(.top, 150)
                     
                     Button(action: {
-                        navigateToMovies = true
+                        viewModel.login(email: email, password: password)
                     }) {
-                        Text("Sign in")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(Color.red)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        } else {
+                            Text("Sign in")
+                                .fontWeight(.semibold)
+                        }
                     }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
                     .padding(.top, 16)
+                    .disabled(viewModel.isLoading)
                     
                     Spacer()
                     
@@ -98,8 +111,13 @@ struct LoginView: View {
                 .padding(.horizontal, 24)
             }
             .navigationBarHidden(true)
+            .onChange(of: viewModel.currentUser) { user in
+                if user != nil {
+                    navigateToMovies = true
+                }
+            }
             .fullScreenCover(isPresented: $navigateToMovies) {
-                MoviesView()
+                MainTabView()
             }
             .navigationDestination(isPresented: $showRegister) {
                 RegisterView()

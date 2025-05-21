@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @StateObject private var viewModel = AuthViewModel()
     @State private var name = ""
     @State private var surname = ""
     @State private var email = ""
@@ -76,22 +77,34 @@ struct RegisterView: View {
                         .background(Color(.darkGray).opacity(0.3))
                         .cornerRadius(12)
                         .foregroundColor(.white)
+                        
+                        if let error = viewModel.error {
+                            Text(error)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                        }
                     }
                 }
                 .padding(.top, 50)
                 
                 Button(action: {
-                    navigateToMovies = true
+                    viewModel.register(name: name, surname: surname, email: email, password: password)
                 }) {
-                    Text("Sign up")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    } else {
+                        Text("Sign up")
+                            .fontWeight(.semibold)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(12)
                 .padding(.top, 16)
+                .disabled(viewModel.isLoading)
                 
                 HStack {
                     Text("Already have an account?")
@@ -106,12 +119,19 @@ struct RegisterView: View {
             .padding(.horizontal, 24)
         }
         .navigationBarHidden(true)
+        .onChange(of: viewModel.currentUser) { user in
+            if user != nil {
+                navigateToMovies = true
+            }
+        }
         .fullScreenCover(isPresented: $navigateToMovies) {
-            MoviesView()
+            MainTabView()
         }
     }
 }
 
 #Preview {
+    NavigationStack {
         RegisterView()
+    }
 }
