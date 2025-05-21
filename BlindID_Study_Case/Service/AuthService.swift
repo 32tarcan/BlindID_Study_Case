@@ -68,7 +68,7 @@ class AuthService {
         print("Register Response Status Code: \(httpResponse.statusCode)")
         print("Register Response Data: \(String(data: data, encoding: .utf8) ?? "")")
         
-        if httpResponse.statusCode == 200 {
+        if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 {
             let registerResponse = try JSONDecoder().decode(RegisterResponse.self, from: data)
             UserDefaults.standard.set(registerResponse.token, forKey: "authToken")
             return registerResponse.user
