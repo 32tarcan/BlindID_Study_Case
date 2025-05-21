@@ -96,7 +96,7 @@ struct RegisterView: View {
                 }) {
                     ZStack {
                         Rectangle()
-                            .fill(Color.red)
+                            .fill(Color.green)
                             .cornerRadius(12)
                         
                         if viewModel.isLoading {

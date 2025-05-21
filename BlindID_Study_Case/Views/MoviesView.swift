@@ -30,7 +30,7 @@ struct MoviesView: View {
                         .font(.headline)
                         .foregroundColor(.white)
                     Text(errorMessage)
-                        .foregroundColor(.red)
+                        .foregroundColor(.green)
                         .multilineTextAlignment(.center)
                     Button("Try Again") {
                         Task {
