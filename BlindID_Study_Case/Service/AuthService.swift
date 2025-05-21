@@ -9,12 +9,12 @@ import Foundation
 
 class AuthService {
     static let shared = AuthService()
-    private let baseUrl = "https://moviatask.cerasus.app/api/auth"
+    private let baseUrl = "https://moviatask.cerasus.app/api"
     
     private init() {}
     
     func login(email: String, password: String) async throws -> User {
-        let url = URL(string: "\(baseUrl)/login")!
+        let url = URL(string: "\(baseUrl)/auth/login")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -46,7 +46,7 @@ class AuthService {
     }
     
     func register(name: String, surname: String, email: String, password: String) async throws -> User {
-        let url = URL(string: "\(baseUrl)/register")!
+        let url = URL(string: "\(baseUrl)/auth/register")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -82,12 +82,12 @@ class AuthService {
         }
     }
     
-    func getCurrentUser() async throws -> User {
+    func getCurrentUser() async throws -> ProfileUser {
         guard let token = UserDefaults.standard.string(forKey: "authToken") else {
             throw AuthError.unauthorized
         }
         
-        let url = URL(string: "\(baseUrl)/me")!
+        let url = URL(string: "\(baseUrl)/auth/me")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -102,9 +102,51 @@ class AuthService {
         print("Get Current User Response Data: \(String(data: data, encoding: .utf8) ?? "")")
         
         if httpResponse.statusCode == 200 {
-            return try JSONDecoder().decode(User.self, from: data)
+            return try JSONDecoder().decode(ProfileUser.self, from: data)
         } else {
             throw AuthError.unauthorized
+        }
+    }
+    
+    func updateProfile(name: String, surname: String) async throws -> ProfileUser {
+        guard let token = UserDefaults.standard.string(forKey: "authToken") else {
+            throw AuthError.unauthorized
+        }
+        
+        let url = URL(string: "\(baseUrl)/users/profile")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let body = [
+            "name": name,
+            "surname": surname
+        ]
+        request.httpBody = try JSONEncoder().encode(body)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw AuthError.invalidResponse
+        }
+        
+        print("Update Profile Response Status Code: \(httpResponse.statusCode)")
+        print("Update Profile Response Data: \(String(data: data, encoding: .utf8) ?? "")")
+        
+        if httpResponse.statusCode == 200 {
+            // First decode the update response
+            let updateResponse = try JSONDecoder().decode(UpdateProfileResponse.self, from: data)
+            
+            // Then fetch the full profile to get all user data
+            return try await getCurrentUser()
+        } else {
+            do {
+                let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                throw AuthError.serverError(message: errorResponse.message)
+            } catch {
+                throw AuthError.serverError(message: "Profile update failed with status code: \(httpResponse.statusCode)")
+            }
         }
     }
 }
