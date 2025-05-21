@@ -8,11 +8,110 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @State private var name = ""
+    @State private var surname = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var showPassword = false
+    @State private var navigateToMovies = false
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 32) {
+                    Text("Sign Up")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                    
+                    VStack(spacing: 20) {
+                        TextField("Name", text: $name)
+                            .textFieldStyle(.plain)
+                            .textContentType(.givenName)
+                            .autocapitalization(.words)
+                            .padding()
+                            .background(Color(.darkGray).opacity(0.3))
+                            .cornerRadius(12)
+                            .foregroundColor(.white)
+                        
+                        TextField("Surname", text: $surname)
+                            .textFieldStyle(.plain)
+                            .textContentType(.familyName)
+                            .autocapitalization(.words)
+                            .padding()
+                            .background(Color(.darkGray).opacity(0.3))
+                            .cornerRadius(12)
+                            .foregroundColor(.white)
+                        
+                        TextField("E-mail", text: $email)
+                            .textFieldStyle(.plain)
+                            .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                            .padding()
+                            .background(Color(.darkGray).opacity(0.3))
+                            .cornerRadius(12)
+                            .foregroundColor(.white)
+                        
+                        HStack {
+                            if showPassword {
+                                TextField("Password", text: $password)
+                                    .textContentType(.newPassword)
+                            } else {
+                                SecureField("Password", text: $password)
+                                    .textContentType(.newPassword)
+                            }
+                            
+                            Button(action: {
+                                showPassword.toggle()
+                            }) {
+                                Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .padding()
+                        .background(Color(.darkGray).opacity(0.3))
+                        .cornerRadius(12)
+                        .foregroundColor(.white)
+                    }
+                }
+                .padding(.top, 50)
+                
+                Button(action: {
+                    navigateToMovies = true
+                }) {
+                    Text("Sign up")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+                .padding(.top, 16)
+                
+                HStack {
+                    Text("Already have an account?")
+                        .foregroundColor(.gray)
+                    Button("Sign In") {
+                        dismiss()
+                    }
+                    .foregroundColor(.white)
+                }
+                .font(.footnote)
+            }
+            .padding(.horizontal, 24)
+        }
+        .navigationBarHidden(true)
+        .fullScreenCover(isPresented: $navigateToMovies) {
+            MoviesView()
+        }
     }
 }
 
 #Preview {
-    RegisterView()
+        RegisterView()
 }
