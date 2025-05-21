@@ -14,7 +14,7 @@ struct MovieCardView: View {
     @State private var animateHeart = 1.0
     
     var body: some View {
-        NavigationLink(destination: MovieDetailView(movie: movie)) {
+        NavigationLink(destination: MovieDetailView()) {
             VStack(alignment: .leading, spacing: 8) {
                 // Image with Like Button
                 ZStack(alignment: .topTrailing) {
@@ -47,48 +47,32 @@ struct MovieCardView: View {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
                             .font(.title2)
                             .foregroundColor(isLiked ? .red : .white)
-                            .padding(8)
-                            .background(
-                                Circle()
-                                    .fill(Color.black.opacity(0.5))
-                            )
                             .scaleEffect(animateHeart)
-                            .shadow(color: isLiked ? .red.opacity(0.3) : .clear, radius: isLiked ? 10 : 0)
+                            .padding(8)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
                     }
                     .padding(8)
                 }
                 
-                // Movie Info
                 VStack(alignment: .leading, spacing: 4) {
                     Text(movie.title)
                         .font(.headline)
-                        .lineLimit(2)
+                        .lineLimit(1)
                         .foregroundColor(.primary)
                     
-                    HStack {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                        Text(String(format: "%.1f", movie.rating))
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-                        
-                        Text("(\(movie.year))")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    
-                    Text(movie.category)
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                    Text("movie.overview")
+                        .font(.subheadline)
+                        .lineLimit(2)
+                        .foregroundColor(.secondary)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
             }
-            .padding(8)
             .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(radius: 4)
         }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 
