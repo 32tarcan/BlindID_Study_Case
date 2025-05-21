@@ -167,7 +167,26 @@ struct MovieDetailView: View {
                 }
             }
             .ignoresSafeArea(edges: [.top, .bottom])
+            
+            VStack {
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("backButton")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.leading, 16)
+                    .padding(.top, 8)
+                    
+                    Spacer()
+                }
+                Spacer()
+            }
         }
+        .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         .task {
