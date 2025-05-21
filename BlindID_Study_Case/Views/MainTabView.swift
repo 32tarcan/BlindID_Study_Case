@@ -37,7 +37,7 @@ struct MainTabView: View {
         }
         .preferredColorScheme(.dark)
         .background(Color.black)
-        .tint(.green)
+        .tint(.red)
         
     }
 }

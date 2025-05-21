@@ -86,7 +86,7 @@ struct LoginView: View {
                     }) {
                         ZStack {
                             Rectangle()
-                                .fill(Color.green)
+                                .fill(Color.red)
                                 .cornerRadius(12)
                             
                             if viewModel.isLoading {

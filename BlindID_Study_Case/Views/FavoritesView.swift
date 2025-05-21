@@ -36,7 +36,7 @@ struct FavoritesView: View {
                         }
                     }
                     .padding()
-                    .background(Color.green)
+                    .background(Color.red)
                     .foregroundColor(.white)
                     .cornerRadius(8)
                 }
