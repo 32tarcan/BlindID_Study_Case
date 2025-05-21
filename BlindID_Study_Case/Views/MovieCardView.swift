@@ -84,19 +84,21 @@ struct MovieCardView: View {
                     Text(movie.title)
                         .font(.headline)
                         .lineLimit(1)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.white)
                     
                     Text(movie.description)
                         .font(.subheadline)
                         .lineLimit(2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.gray)
                 }
                 .padding(.horizontal, 8)
                 .padding(.bottom, 8)
             }
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(radius: 4)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(red: 0.12, green: 0.12, blue: 0.12))
+                    .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
+            )
         }
         .onAppear {
             // Check if the movie is liked when the view appears

@@ -12,6 +12,8 @@ struct BlindID_Study_CaseApp: App {
     var body: some Scene {
         WindowGroup {
             LoginView()
+                .preferredColorScheme(.dark)
+                .background(Color.black)
         }
     }
 }

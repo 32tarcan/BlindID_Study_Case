@@ -17,6 +17,8 @@ struct FavoritesView: View {
     
     var body: some View {
         ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
             if viewModel.isLoading && viewModel.likedMovies.isEmpty {
                 ProgressView()
                     .scaleEffect(1.5)
@@ -24,6 +26,7 @@ struct FavoritesView: View {
                 VStack(spacing: 16) {
                     Text("Error Loading Favorites")
                         .font(.headline)
+                        .foregroundColor(.white)
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
@@ -45,6 +48,7 @@ struct FavoritesView: View {
                         .foregroundColor(.gray)
                     Text("No Favorite Movies")
                         .font(.headline)
+                        .foregroundColor(.white)
                     Text("Movies you like will appear here")
                         .foregroundColor(.gray)
                 }
@@ -66,6 +70,10 @@ struct FavoritesView: View {
             }
         }
         .navigationTitle("Favorites")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(Color.black, for: .navigationBar)
         .onAppear {
             Task {
                 await viewModel.loadLikedMovies()

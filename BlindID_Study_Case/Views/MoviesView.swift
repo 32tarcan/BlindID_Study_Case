@@ -19,6 +19,8 @@ struct MoviesView: View {
     
     var body: some View {
         ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
             if isLoading && movies.isEmpty {
                 ProgressView()
                     .scaleEffect(1.5)
@@ -26,6 +28,7 @@ struct MoviesView: View {
                 VStack(spacing: 16) {
                     Text("Error Loading Movies")
                         .font(.headline)
+                        .foregroundColor(.white)
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
@@ -40,6 +43,14 @@ struct MoviesView: View {
                     .cornerRadius(8)
                 }
                 .padding()
+            } else if movies.isEmpty {
+                VStack(spacing: 16) {
+                    Text("No Movies Found")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Text("Please try again later")
+                        .foregroundColor(.gray)
+                }
             } else {
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: columns, spacing: 24) {
@@ -58,6 +69,10 @@ struct MoviesView: View {
             }
         }
         .navigationTitle("Movies")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(Color.black, for: .navigationBar)
         .onAppear {
             Task {
                 await loadMovies()

@@ -35,6 +35,8 @@ struct MainTabView: View {
                 Text("Profile")
             }
         }
+        .preferredColorScheme(.dark)
+        .background(Color.black)
     }
 }
 #Preview {
