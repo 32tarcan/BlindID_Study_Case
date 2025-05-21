@@ -80,7 +80,9 @@ struct LoginView: View {
                     .padding(.top, 150)
                     
                     Button(action: {
-                        viewModel.login(email: email, password: password)
+                        Task {
+                            await viewModel.login(email: email, password: password)
+                        }
                     }) {
                         ZStack {
                             Rectangle()

@@ -90,7 +90,9 @@ struct RegisterView: View {
                 .padding(.top, 50)
                 
                 Button(action: {
-                    viewModel.register(name: name, surname: surname, email: email, password: password)
+                    Task {
+                        await viewModel.register(name: name, surname: surname, email: email, password: password)
+                    }
                 }) {
                     ZStack {
                         Rectangle()
