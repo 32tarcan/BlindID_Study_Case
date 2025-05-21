@@ -14,124 +14,163 @@ struct MovieDetailView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 16) {
-                // Movie Poster with Like Button
-                ZStack(alignment: .topTrailing) {
-                    AsyncImage(url: URL(string: movie.poster_url)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Rectangle()
-                            .foregroundColor(.gray.opacity(0.3))
-                            .aspectRatio(2/3, contentMode: .fit)
-                            .overlay(
-                                ProgressView()
-                            )
-                    }
-                    .cornerRadius(12)
-                    
-                    // Like Button
-                    Button(action: {
-                        withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
-                            isLiked.toggle()
-                            animateHeart = 1.5
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    ZStack(alignment: .bottom) {
+                        AsyncImage(url: URL(string: movie.poster_url)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            Rectangle()
+                                .foregroundColor(.gray.opacity(0.3))
                         }
-                        withAnimation(.easeInOut(duration: 0.1).delay(0.1)) {
-                            animateHeart = 1.0
-                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: UIScreen.main.bounds.height * 0.65)
+                        .clipped()
                         
-                        // Call API to like/unlike movie
-                        Task {
-                            do {
-                                if isLiked {
-                                    try await MovieService.shared.likeMovie(id: movie.id)
-                                } else {
-                                    try await MovieService.shared.unlikeMovie(id: movie.id)
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                .clear,
+                                .clear,
+                                .black.opacity(0.5),
+                                .black.opacity(0.8),
+                                .black
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(movie.title)
+                                .font(.system(size: 34, weight: .bold))
+                                .foregroundColor(.white)
+                            
+                            Text(movie.category)
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
+                    }
+                    .ignoresSafeArea(edges: [.top])
+                    
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack(spacing: 12) {
+                            
+                            InfoCard(
+                                icon: "clock",
+                                title: "Year",
+                                value: "\(movie.year)"
+                            )
+                            
+                            InfoCard(
+                                icon: "star.fill",
+                                title: "Rating",
+                                value: String(format: "%.1f", movie.rating),
+                                iconColor: .yellow
+                            )
+                            
+                            Button(action: {
+                                withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
+                                    isLiked.toggle()
+                                    animateHeart = 1.5
                                 }
-                            } catch {
-                                print("Error toggling like status: \(error)")
-                                // Revert the like state if the API call fails
-                                isLiked.toggle()
+                                withAnimation(.easeInOut(duration: 0.1).delay(0.1)) {
+                                    animateHeart = 1.0
+                                }
+                                
+                                Task {
+                                    do {
+                                        if isLiked {
+                                            try await MovieService.shared.likeMovie(id: movie.id)
+                                        } else {
+                                            try await MovieService.shared.unlikeMovie(id: movie.id)
+                                        }
+                                    } catch {
+                                        print("Error toggling like status: \(error)")
+                                        isLiked.toggle()
+                                    }
+                                }
+                            }) {
+                                InfoCard(
+                                    icon: isLiked ? "heart.fill" : "heart",
+                                    title: "Like",
+                                    value: isLiked ? "Liked" : "Like",
+                                    iconColor: isLiked ? .red : .white
+                                )
                             }
                         }
-                    }) {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.title)
-                            .foregroundColor(isLiked ? .red : .white)
-                            .scaleEffect(animateHeart)
-                            .padding(12)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                    }
-                    .padding(16)
-                }
-                
-                // Movie Title and Year
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(movie.title)
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    HStack {
-                        Text("\(movie.year)")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
+                        .padding(.top, 20)
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Story Plot")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            
+                            Text(movie.description)
+                                .font(.body)
+                                .foregroundColor(.gray)
+                                .lineSpacing(6)
+                        }
+                        
+                        Divider()
+                            .background(Color.gray.opacity(0.3))
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Cast")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            
+                            LazyHGrid(rows: [GridItem(.fixed(100))], spacing: 24) {
+                                ForEach(movie.actors, id: \.self) { actor in
+                                    VStack(spacing: 8) {
+                                        Circle()
+                                            .fill(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                            .frame(width: 70, height: 70)
+                                            .overlay(
+                                                Image(systemName: "person")
+                                                    .font(.system(size: 24))
+                                                    .foregroundColor(.gray)
+                                            )
+                                        
+                                        let nameParts = actor.components(separatedBy: " ")
+                                        
+                                        Text(nameParts.first ?? "")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(.white)
+                                        
+                                        if nameParts.count > 1 {
+                                            Text(nameParts.dropFirst().joined(separator: " "))
+                                                .font(.system(size: 13))
+                                                .foregroundColor(.white)
+                                                .lineLimit(1)
+                                        }
+                                    }
+                                    .frame(width: 85)
+                                }
+                            }
+                            .padding(.vertical, 10)
+                        }
                         
                         Spacer()
-                        
-                        HStack {
-                            Image(systemName: "star.fill")
-                                .foregroundColor(.yellow)
-                            Text(String(format: "%.1f", movie.rating))
-                                .font(.headline)
-                        }
+                            .frame(height: 100)
                     }
+                    .padding(.horizontal, 20)
+                    .background(Color.black)
                 }
-                
-                // Category
-                Text(movie.category)
-                    .font(.subheadline)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
-                
-                // Description
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Overview")
-                        .font(.headline)
-                    
-                    Text(movie.description)
-                        .font(.body)
-                        .lineSpacing(4)
-                }
-                
-                // Actors
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Cast")
-                        .font(.headline)
-                    
-                    ForEach(movie.actors, id: \.self) { actor in
-                        HStack {
-                            Image(systemName: "person.circle.fill")
-                                .foregroundColor(.secondary)
-                            Text(actor)
-                                .font(.body)
-                        }
-                        .padding(.vertical, 2)
-                    }
-                }
-                
-                Spacer()
             }
-            .padding()
+            .ignoresSafeArea(edges: [.top, .bottom])
         }
-        .navigationTitle("Movie Details")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .task {
-            // Check if the movie is liked immediately when the view is created
             do {
                 isLiked = try await MovieService.shared.isMovieLiked(id: movie.id)
             } catch {
@@ -141,17 +180,29 @@ struct MovieDetailView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        MovieDetailView(movie: Movie(
-            id: 1,
-            title: "Inception",
-            year: 2010,
-            rating: 8.8,
-            actors: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
-            category: "Science Fiction",
-            poster_url: "https://m.media-amazon.com/images/M/MV5BMjAxM2Y3NjYtNF5BM15BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.JPG",
-            description: "A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea into the mind of a CEO."
-        ))
+struct InfoCard: View {
+    let icon: String
+    let title: String
+    let value: String
+    var iconColor: Color = .white
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundColor(iconColor)
+            
+            Text(value)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+            
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color(red: 0.15, green: 0.15, blue: 0.15))
+        .cornerRadius(12)
     }
 }
