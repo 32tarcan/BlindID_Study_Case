@@ -1,20 +1,27 @@
+//
+//  FavoritesView.swift
+//  BlindID_Study_Case
+//
+//  Created by Bahadır Tarcan on 21.05.2025.
+//
+
 import SwiftUI
 
 struct FavoritesView: View {
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Favorites")
-                    .font(.largeTitle)
-                    .padding()
-                
-                Spacer()
-            }
-            .navigationTitle("Favorites")
+        VStack {
+            Text("Favorites")
+                .font(.largeTitle)
+                .padding()
+            
+            Spacer()
         }
+        .navigationTitle("Favorites")
     }
 }
 
 #Preview {
-    FavoritesView()
+    NavigationStack {
+        FavoritesView()
+    }
 }

@@ -1,25 +1,39 @@
+//
+//  MainTabView.swift
+//  BlindID_Study_Case
+//
+//  Created by Bahadır Tarcan on 21.05.2025.
+//
+
+
 import SwiftUI
 
 struct MainTabView: View {
     var body: some View {
         TabView {
-            MoviesView()
-                .tabItem {
-                    Image(systemName: "film")
-                    Text("Movies")
-                }
+            NavigationStack {
+                MoviesView()
+            }
+            .tabItem {
+                Image(systemName: "film")
+                Text("Movies")
+            }
             
-            FavoritesView()
-                .tabItem {
-                    Image(systemName: "heart.fill")
-                    Text("Favorites")
-                }
+            NavigationStack {
+                FavoritesView()
+            }
+            .tabItem {
+                Image(systemName: "heart.fill")
+                Text("Favorites")
+            }
             
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "person.fill")
-                    Text("Profile")
-                }
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Image(systemName: "person.fill")
+                Text("Profile")
+            }
         }
     }
 }

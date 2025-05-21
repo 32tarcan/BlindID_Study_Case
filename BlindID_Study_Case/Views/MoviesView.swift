@@ -17,23 +17,23 @@ struct MoviesView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: columns, spacing: 24) {
-                    ForEach(movies) { movie in
-                        MovieCardView(movie: movie)
-                            .frame(height: 320)
-                    }
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: columns, spacing: 24) {
+                ForEach(movies) { movie in
+                    MovieCardView(movie: movie)
+                        .frame(height: 320)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 20)
             }
-            .navigationTitle("Movies")
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 20)
         }
+        .navigationTitle("Movies")
     }
 }
 
 #Preview {
-    MoviesView()
+    NavigationStack {
+        MoviesView()
+    }
 }
