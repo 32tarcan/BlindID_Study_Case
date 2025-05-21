@@ -11,7 +11,7 @@ import SwiftUI
 struct BlindID_Study_CaseApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
         }
     }
 }
