@@ -60,9 +60,11 @@ struct LoginView: View {
                             .foregroundColor(.white)
                             
                             if let error = viewModel.error {
-                                Text(error)
+                                Text("Please check your email and password.")
                                     .foregroundColor(.red)
                                     .font(.caption)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .padding(.top, 4)
                             }
                             
                             Button(action: {
@@ -80,20 +82,23 @@ struct LoginView: View {
                     Button(action: {
                         viewModel.login(email: email, password: password)
                     }) {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        } else {
-                            Text("Sign in")
-                                .fontWeight(.semibold)
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.red)
+                                .cornerRadius(12)
+                            
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            } else {
+                                Text("Sign in")
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.white)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    .padding(.top, 16)
                     .disabled(viewModel.isLoading)
                     
                     Spacer()

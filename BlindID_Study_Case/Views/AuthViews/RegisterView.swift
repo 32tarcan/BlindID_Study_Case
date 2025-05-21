@@ -79,9 +79,11 @@ struct RegisterView: View {
                         .foregroundColor(.white)
                         
                         if let error = viewModel.error {
-                            Text(error)
+                            Text("Please check your information and try again.")
                                 .foregroundColor(.red)
                                 .font(.caption)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.top, 4)
                         }
                     }
                 }
@@ -90,20 +92,23 @@ struct RegisterView: View {
                 Button(action: {
                     viewModel.register(name: name, surname: surname, email: email, password: password)
                 }) {
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    } else {
-                        Text("Sign up")
-                            .fontWeight(.semibold)
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.red)
+                            .cornerRadius(12)
+                        
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        } else {
+                            Text("Sign up")
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
-                .background(Color.red)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-                .padding(.top, 16)
                 .disabled(viewModel.isLoading)
                 
                 HStack {
