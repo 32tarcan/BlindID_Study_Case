@@ -6,9 +6,18 @@ class AuthViewModel: ObservableObject {
     @Published var currentUser: User?
     @Published var profileUser: ProfileUser?
     @Published var isLoading = false
+    @Published var isCheckingAuth = true
     @Published var error: String?
     
     private let authService = AuthService.shared
+    
+    func checkAuthStatus() async {
+        isCheckingAuth = true
+        if isAuthenticated {
+            await getCurrentUser()
+        }
+        isCheckingAuth = false
+    }
     
     func getCurrentUser() async {
         print("Getting current user...")

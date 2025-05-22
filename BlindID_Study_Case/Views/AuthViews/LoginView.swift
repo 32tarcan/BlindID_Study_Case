@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var viewModel = AuthViewModel()
+    @EnvironmentObject private var viewModel: AuthViewModel
     @State private var email = ""
     @State private var password = ""
     @State private var showPassword = false
