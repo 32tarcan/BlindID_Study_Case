@@ -26,21 +26,11 @@ struct MovieCardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 // Image with Like Button
                 ZStack(alignment: .topTrailing) {
-                    AsyncImage(url: URL(string: movie.poster_url)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        Rectangle()
-                            .foregroundColor(.gray.opacity(0.3))
-                            .overlay(
-                                ProgressView()
-                            )
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 240)
-                    .cornerRadius(10)
-                    .clipped()
+                    CachedAsyncImage(url: URL(string: movie.poster_url))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 240)
+                        .cornerRadius(10)
+                        .clipped()
                     
                     // Like Button
                     if showLikeButton {

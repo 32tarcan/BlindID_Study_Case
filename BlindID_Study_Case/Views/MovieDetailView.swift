@@ -20,17 +20,10 @@ struct MovieDetailView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     ZStack(alignment: .bottom) {
-                        AsyncImage(url: URL(string: movie.poster_url)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Rectangle()
-                                .foregroundColor(.gray.opacity(0.3))
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: UIScreen.main.bounds.height * 0.65)
-                        .clipped()
+                        CachedAsyncImage(url: URL(string: movie.poster_url))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: UIScreen.main.bounds.height * 0.65)
+                            .clipped()
                         
                         LinearGradient(
                             gradient: Gradient(colors: [
